@@ -1,0 +1,67 @@
+﻿
+
+@model IEnumerable<BlogApplication_Vikrant.Models.Blog>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>All Posts</h2>
+<hr />
+<div class="row mt-5">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+        <p>Searches are case sensitive!</p>
+        <div class="form-group mb-2">
+            @Html.TextBox("searchString", null, new { @class = "form-control", placeholder = "Search by Title/Username" })
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Search</button>
+    }
+
+    @foreach (var item in Model)
+    {
+        if (string.IsNullOrEmpty(Request.QueryString["searchString"]) || item.Title.Contains(Request.QueryString["searchString"]) || item.PostedName.Contains(Request.QueryString["searchString"]))
+        {
+            <div class="col-md-4 mb-4">
+                <h3 class="card-title">Posted by - @Html.DisplayFor(modelItem => item.PostedName)</h3>
+                <div class="card">
+
+                    <img class="card-img-top" src="@Url.Content(item.Image)" alt="Product image">
+                    <hr />
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                        <p class="card-text">Author : @Html.DisplayFor(modelItem => item.Author)</p>
+                        <div class="d-flex justify-content-between">
+                            <div class="btn-group">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    if (User.IsInRole("Admin"))
+                                    {
+
+                                        
+                                        @Html.ActionLink("Disable this post", "Disable", "Home", new { id = item.Id }, new { @class = "btn btn-danger" })
+                                    }
+
+
+                                }
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+
+
+
+
+
+
+
+
